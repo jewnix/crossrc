@@ -15,6 +15,21 @@ kernel() {
     return 1
 }
 
+arch() {
+	if [ "$( getconf LONG_BIT | grep -ci '64' )" -gt "0" ]; then
+	echo "X86_64"
+	return 0
+	fi
+
+	if [ "$( getconf LONG_BIT | grep -ci '32' )" -gt "0" ]; then
+	echo "i686"
+	return 0
+	fi
+
+	echo "unknown architecture"
+	return 1
+}
+
 vendor() {
     if [ -f /etc/lsb-release ]; then
         for vendor in "ubuntu" "debian"; do
@@ -35,9 +50,10 @@ vendor() {
 }
 
 os() {
-    echo "$(kernel).$(vendor)"
+    echo "$(kernel).$(vendor).$(arch)"
 }
 
+arch="$(arch)"
 kernel="$(kernel)"
 vendor="$(vendor)"
 os="$(os)"
