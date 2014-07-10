@@ -11,6 +11,11 @@ kernel() {
         return 0
     fi
 
+    if [ $( uname -s ) == 'SunOS' ]; then
+        echo "SunOS"
+        return 0
+    fi
+
     echo "unknown"
     return 1
 }
@@ -21,7 +26,13 @@ vendor() {
         echo "gentoo"
         return 0
     fi
-    
+
+    if [ $( uname -s ) == 'SunOS' ]; then
+            version=`uname -r`
+            echo $version
+            return 0
+    fi
+
     for version_file in /proc/version /etc/lsb-release /etc/os-release /usr/lib/os-release; do
         if [ -f "${version_file}" ]; then
             for vendor in "ubuntu" "debian" "el6uek" "red hat"; do
@@ -38,6 +49,13 @@ vendor() {
 }
 
 arch() {
+	
+        if [ $( uname -m ) == 'sun4v' ]; then
+        echo "sparc"
+        return 0
+        fi
+
+	
 	if [ "$( getconf LONG_BIT | grep -ci '64' )" -gt "0" ]; then
 	echo "X86_64"
 	return 0
